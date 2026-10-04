@@ -9,3 +9,7 @@ test-results/
 .DS_Store
 apps/api/src/scratch/
 .playwright-mcp/
+
+# Session handover (local scratch, not a deliverable)
+session_handover_summary.md
+session-handover-summaries/

@@ -18,7 +18,7 @@
 
 - The **Day 5 design**: problem framing, personas, screen flows, degradation scenarios, prioritisation and style guide came from our Designathon submission. Per its own AI disclosure, some lo-fi screens were hand-made and turned into the hi-fi prototype with AI help.
 - **Product decisions and approvals**: approving the plan, choosing the PWA approach, accepting or rejecting changes.
-- **Testing**: the system was tested manually through the live demo URL to ensure it worked on both PC and mobile
+- **Testing**: the system was tested manually through the live demo URL to ensure it worked on both PC and mobile.
 
 ## How we used the tools
 

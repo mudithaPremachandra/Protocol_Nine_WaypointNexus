@@ -1,7 +1,5 @@
 # AI tool disclosure
 
-> **Team: review and complete this page before submitting.** It records what we know from the build sessions. Add anything team members did by hand that isn't listed here.
-
 ## Tools used
 
 - **Claude Code (Anthropic, Claude Opus)**, an AI coding assistant running in the terminal with access to the repository.

@@ -6,7 +6,7 @@ One order record moves from the store manager to the dispatcher, the dock, the d
 
 | | |
 |---|---|
-| Live demo | `https://<your-host>` *(fill in after deploying, see [Deployment](#deployment))* |
+| Live demo | **https://muditha-1.taila8a61b.ts.net** (sign in with the accounts below) |
 | Demo video | *(YouTube link)* |
 | Stack | TypeScript end to end: React + Vite installable PWA, Fastify API, PostgreSQL 16 (Drizzle), Docker Compose |
 
@@ -151,6 +151,10 @@ scripts/            smoke test, fast-forward, icon generator
 ```
 
 ## Deployment
+
+**How the live demo is hosted:** the same `docker compose up` stack runs on a dedicated always-on machine, published over HTTPS with [Tailscale Funnel](https://tailscale.com/kb/1223/funnel) (`tailscale funnel --bg 3000`). That gives a stable `https://…ts.net` address with a real certificate, which the PWA needs for offline mode, camera and GPS. No ports are opened on the network, and the database is reachable only from the machine itself.
+
+To host it on a cloud VM instead:
 
 The production stack uses the same Compose file, with Caddy for automatic HTTPS (service workers and installable PWAs require HTTPS):
 

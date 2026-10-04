@@ -8,7 +8,7 @@
 
 ## What was AI-assisted
 
-- **Implementation plan and architecture.** The team supplied the Designathon design document, the prototype and the challenge booklet, and asked for a plan as a software architect would write it. The AI proposed the stack, components, folder structure and build order; the team reviewed and approved the plan before any code was written (and kept the installable PWA approach from our own design rather than native apps).
+- **Implementation plan and architecture.** The team supplied the Designathon design document, the prototype and the challenge booklet, and asked for an implementation plan. The AI proposed the stack, components, folder structure and build order; the team reviewed and approved the plan before any code was written (and kept the installable PWA approach from our own design rather than native apps).
 - **Code.** Most of the source code was written by the AI under the team's direction: the rule checker, planner, API, database schema, seed loader, offline sync and all React screens. The screens port the CSS tokens and components of our Day 5 prototype so the build stays faithful to the design.
 - **Tests and verification.** The AI wrote the unit and property tests and the API smoke test, ran them, and drove the real UI in a browser to check each screen against the prototype. Several bugs were found and fixed this way, for example a trip-row matching bug that corrupted two-vehicle moves, and a stale-server issue.
 - **Data analysis.** The AI profiled the supplied datasets to choose the demo day (a real pre-Vesak day from `deliveries_train.csv`), the workshop vehicles (the booklet's peak-day list) and the late-risk model (delay distributions from `route_legs_train.csv`).

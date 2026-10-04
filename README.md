@@ -104,12 +104,12 @@ PostgreSQL 16 (+ photo volume)
 ```
 
 - **One rule checker.** `packages/domain` holds `validateVehicleDay`: capacity (kg and m³), refrigeration, van-only access, home depot, one brand and district per trip, the 270-minute Fresh and 480-minute Style/Tech budgets, at most 2 trips, delivery and mall windows (arrival simulation; early vehicles wait), and the weekly fuel quota. The planner, the move validator, the trip-check screen and the incident recovery all use it, so a plan can't contain a violation the UI didn't explain.
-- **Planner** (`packages/planner`): priority ranking (repeat skips first, then chilled Fresh, dry Fresh, Tech, Style), then greedy placement that saves scarce vehicles (reefers, vans), then an ejection-chain improvement pass. Every unplaced order gets a reason derived from the rules that blocked it, and a bottleneck analysis covers the squeezed depot. See [docs/planner.md](docs/planner.md).
-- **Offline.** Field records are append-only facts; plans are server-authoritative and versioned. Every field action becomes a mutation with a client UUID, written to IndexedDB first and pushed when there is signal. The server applies each UUID at most once. A delivery recorded offline is always kept; if its stop was reassigned meanwhile, dispatch gets a *possible double-serve* exception. A newer plan that changes the driver's stops is shown as a diff to accept (DZ1). See [docs/architecture.md](docs/architecture.md).
+- **Planner** (`packages/planner`): priority ranking (repeat skips first, then chilled Fresh, dry Fresh, Tech, Style), then greedy placement that saves scarce vehicles (reefers, vans), then an ejection-chain improvement pass. Every unplaced order gets a reason derived from the rules that blocked it, and a bottleneck analysis covers the squeezed depot. See [docs/planner/planner.md](docs/planner/planner.md).
+- **Offline.** Field records are append-only facts; plans are server-authoritative and versioned. Every field action becomes a mutation with a client UUID, written to IndexedDB first and pushed when there is signal. The server applies each UUID at most once. A delivery recorded offline is always kept; if its stop was reassigned meanwhile, dispatch gets a *possible double-serve* exception. A newer plan that changes the driver's stops is shown as a diff to accept (DZ1). See [docs/architecture/architecture.md](docs/architecture/architecture.md).
 - **Vehicle location** comes from the driver's own phone: browser geolocation while a trip is in progress and the app is open, throttled to one fix per 2 min or 300 m, queued offline like everything else, and switchable off by the driver. Fixes outside Sri Lanka (a demo laptop) are ignored and the map falls back to the last recorded stop.
 - **Late risk** comes from Waypoint's own history: `route_legs_train.csv` gives the arrival-delay distribution per district and stop position, and the risk is P(delay > slack), nudged by the day's road disruption.
 
-Docs: [architecture](docs/architecture.md) · [data model](docs/data-model.md) · [planner](docs/planner.md) · [AI tool disclosure](docs/ai-disclosure.md)
+Docs: [architecture](docs/architecture/architecture.md) · [data model](docs/data-model/data-model.md) · [planner](docs/planner/planner.md) · [AI tool disclosure](docs/ai-disclosure.md)
 
 ## Departures from the Day 5 design
 
@@ -146,7 +146,7 @@ packages/planner    buildPlan, checkMove, suggestSwap, bottleneck analysis (+ te
 apps/api            Fastify server: routes, services, Drizzle schema, migrations, seed
 apps/web            React PWA: roles/{dispatcher,loader,driver,store}; screens named after the design IDs
 data/               the booklet's datasets (not public)
-docs/               architecture, data model, planner, AI disclosure
+docs/               architecture/, data-model/, planner/ (each with PNG diagrams), ai-disclosure.md
 scripts/            smoke test, fast-forward, icon generator
 ```
 

@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1060" width="3200" height="2120" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#4E625C"/>
+    </marker>
+    <style>
+      .frame { fill: #F7F9F8; stroke: #D5DDD9; stroke-width: 1.5; }
+      .flabel { font-size: 17px; font-weight: 700; fill: #4E625C; }
+      .role { fill: #E0EEE8; stroke: #1F6F5C; stroke-width: 1.5; }
+      .mod { fill: #FFFFFF; stroke: #1F6F5C; stroke-width: 1.5; }
+      .logic { fill: #FDF0CE; stroke: #F0A202; stroke-width: 1.8; }
+      .store { fill: #FFFFFF; stroke: #4E625C; stroke-width: 1.5; }
+      .t { fill: #16302B; font-size: 16px; text-anchor: middle; }
+      .tb { fill: #16302B; font-size: 18px; font-weight: 700; text-anchor: middle; }
+      .ts { fill: #4E625C; font-size: 14.5px; text-anchor: middle; }
+      .lbl { fill: #16302B; font-size: 15px; }
+      .line { stroke: #4E625C; stroke-width: 2; fill: none; }
+      .dash { stroke: #4E625C; stroke-width: 1.6; fill: none; stroke-dasharray: 6 5; }
+      .note { fill: #4E625C; font-size: 14.5px; font-style: italic; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1060" fill="#FFFFFF"/>
+
+  <!-- 1. Clients -->
+  <rect class="frame" x="40" y="40" width="1110" height="215" rx="12"/>
+  <text class="flabel" x="60" y="68">BROWSER: one installable web app (PWA) with a screen set per role</text>
+
+  <rect class="role" x="60" y="90" width="250" height="140" rx="10"/>
+  <text class="tb" x="185" y="132">Dispatcher</text>
+  <text class="t" x="185" y="160">D1–D6, X2</text>
+  <text class="ts" x="185" y="186">desktop, planning office</text>
+
+  <rect class="role" x="330" y="90" width="250" height="140" rx="10"/>
+  <text class="tb" x="455" y="132">Store manager</text>
+  <text class="t" x="455" y="160">SM1–SM3, X5</text>
+  <text class="ts" x="455" y="186">counter desktop or phone</text>
+
+  <rect class="role" x="600" y="90" width="250" height="140" rx="10"/>
+  <text class="tb" x="725" y="132">Loader</text>
+  <text class="t" x="725" y="160">L1–L4, X3</text>
+  <text class="ts" x="725" y="186">shared dock tablet</text>
+
+  <rect class="role" x="870" y="90" width="260" height="140" rx="10"/>
+  <text class="tb" x="1000" y="132">Driver</text>
+  <text class="t" x="1000" y="160">Dr1–Dr4, X1, X4, DZ1</text>
+  <text class="ts" x="1000" y="186">personal phone</text>
+
+  <!-- Device storage -->
+  <rect class="frame" x="1190" y="40" width="370" height="215" rx="12"/>
+  <text class="flabel" x="1210" y="68">ON THE DEVICE (offline-first)</text>
+  <rect class="mod" x="1210" y="90" width="160" height="140" rx="10"/>
+  <text class="tb" x="1290" y="132">Service</text>
+  <text class="tb" x="1290" y="155">worker</text>
+  <text class="ts" x="1290" y="184">app shell cached,</text>
+  <text class="ts" x="1290" y="204">opens with no signal</text>
+  <rect class="mod" x="1385" y="90" width="160" height="140" rx="10"/>
+  <text class="tb" x="1465" y="125">IndexedDB</text>
+  <text class="ts" x="1465" y="152">trip snapshot</text>
+  <text class="ts" x="1465" y="172">action outbox</text>
+  <text class="ts" x="1465" y="192">photo queue</text>
+  <text class="ts" x="1465" y="212">GPS points</text>
+  <path class="dash" d="M1130,160 L1188,160" marker-end="url(#arrow)"/>
+  <text class="note" x="1137" y="148" font-size="13">loader,</text>
+  <text class="note" x="1137" y="182" font-size="13">driver</text>
+
+  <!-- Client <-> API arrows -->
+  <path class="line" d="M455,256 L455,328" marker-end="url(#arrow)"/>
+  <text class="lbl" x="468" y="290">HTTPS: REST · offline sync push · photo upload</text>
+  <path class="line" d="M1000,328 L1000,256" marker-end="url(#arrow)"/>
+  <text class="lbl" x="1013" y="290">Server-sent events: live changes, scoped per user</text>
+
+  <!-- 2. API -->
+  <rect class="frame" x="40" y="330" width="1520" height="300" rx="12"/>
+  <text class="flabel" x="60" y="358">FASTIFY API: one container, modular monolith (also serves the web app)</text>
+
+  <rect class="mod" x="70" y="378" width="350" height="100" rx="10"/>
+  <text class="tb" x="245" y="418">Auth</text>
+  <text class="ts" x="245" y="446">JWT cookie · role guards</text>
+
+  <rect class="mod" x="445" y="378" width="350" height="100" rx="10"/>
+  <text class="tb" x="620" y="418">Orders</text>
+  <text class="ts" x="620" y="446">store orders · 16:00 cutoff · one queue</text>
+
+  <rect class="mod" x="820" y="378" width="350" height="100" rx="10"/>
+  <text class="tb" x="995" y="418">Planning</text>
+  <text class="ts" x="995" y="446">generate · move · swap · defer · publish</text>
+
+  <rect class="mod" x="1195" y="378" width="345" height="100" rx="10"/>
+  <text class="tb" x="1367" y="418">Field views</text>
+  <text class="ts" x="1367" y="446">dock queue · driver day · store view</text>
+
+  <rect class="mod" x="70" y="500" width="350" height="100" rx="10"/>
+  <text class="tb" x="245" y="540">Sync</text>
+  <text class="ts" x="245" y="568">offline actions applied once (by device ID)</text>
+
+  <rect class="mod" x="445" y="500" width="350" height="100" rx="10"/>
+  <text class="tb" x="620" y="540">Incidents</text>
+  <text class="ts" x="620" y="568">cold-chain recovery options</text>
+
+  <rect class="mod" x="820" y="500" width="350" height="100" rx="10"/>
+  <text class="tb" x="995" y="540">Live board · Outlook</text>
+  <text class="ts" x="995" y="568">map · exceptions · demand forecast</text>
+
+  <rect class="mod" x="1195" y="500" width="345" height="100" rx="10"/>
+  <text class="tb" x="1367" y="540">Event log</text>
+  <text class="ts" x="1367" y="568">audit trail · feeds live updates</text>
+
+  <!-- API -> lower layer -->
+  <path class="line" d="M455,631 L455,708" marker-end="url(#arrow)"/>
+  <text class="lbl" x="468" y="675">uses</text>
+  <path class="line" d="M1240,631 L1240,708" marker-end="url(#arrow)"/>
+  <text class="lbl" x="1253" y="675">reads / writes</text>
+
+  <!-- 3a. Logic -->
+  <rect class="frame" x="40" y="710" width="850" height="310" rx="12"/>
+  <text class="flabel" x="60" y="738">SHARED BUSINESS LOGIC: pure TypeScript, no I/O, unit-tested</text>
+
+  <rect class="logic" x="70" y="760" width="330" height="160" rx="10"/>
+  <text class="tb" x="235" y="805">@wn/planner</text>
+  <text class="t" x="235" y="838">buildPlan · checkMove</text>
+  <text class="t" x="235" y="864">suggestSwap · bottleneck</text>
+
+  <path class="line" d="M402,840 L478,840" marker-end="url(#arrow)"/>
+
+  <rect class="logic" x="480" y="760" width="390" height="160" rx="10"/>
+  <text class="tb" x="675" y="800">@wn/domain</text>
+  <text class="t" x="675" y="832">validateVehicleDay: the one rule checker</text>
+  <text class="t" x="675" y="858">trip time · arrival simulation</text>
+  <text class="t" x="675" y="884">offline action schemas</text>
+
+  <text class="note" x="70" y="958">The same rule checker serves the planner, manual moves (D3B), the trip check (D3)</text>
+  <text class="note" x="70" y="982">and incident recovery (X2); the browser imports the same rules and schemas.</text>
+
+  <!-- 3b. Storage -->
+  <rect class="frame" x="920" y="710" width="640" height="310" rx="12"/>
+  <text class="flabel" x="940" y="738">STORAGE</text>
+
+  <!-- PostgreSQL cylinder -->
+  <path class="store" d="M960,785 a130,22 0 0,1 260,0 v150 a130,22 0 0,1 -260,0 z"/>
+  <path class="store" d="M960,785 a130,22 0 0,0 260,0" fill="none"/>
+  <text class="tb" x="1090" y="842">PostgreSQL 16</text>
+  <text class="ts" x="1090" y="870">orders · plans · trips · stops</text>
+  <text class="ts" x="1090" y="890">deliveries · events · positions …</text>
+  <text class="ts" x="1090" y="910">(pgdata volume)</text>
+
+  <!-- Photo cylinder -->
+  <path class="store" d="M1290,785 a120,22 0 0,1 240,0 v150 a120,22 0 0,1 -240,0 z"/>
+  <path class="store" d="M1290,785 a120,22 0 0,0 240,0" fill="none"/>
+  <text class="tb" x="1410" y="852">Photo volume</text>
+  <text class="ts" x="1410" y="880">proof-of-delivery and</text>
+  <text class="ts" x="1410" y="900">shortfall photos</text>
+</svg>

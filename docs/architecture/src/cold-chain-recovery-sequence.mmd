@@ -1,0 +1,22 @@
+sequenceDiagram
+  autonumber
+  participant Dr as Driver<br/>(failed reefer)
+  participant API
+  participant Disp as Dispatcher<br/>(X2)
+  participant Dock as Loader<br/>(X3)
+  participant Dr2 as Rescue driver<br/>(X4)
+  participant St as Store<br/>(X5)
+
+  Dr->>API: Report: reefer not holding temperature
+  Note over Dr: X1. Queued if offline,<br/>with a "call dispatch" button
+  API->>API: Compute recovery options
+  Note over API: Each option checked with the same<br/>rules as the plan: capacity, Fresh<br/>budget, trips per day, plus arrival<br/>times from the vehicle's position
+  Disp->>API: Open the incident
+  API-->>Disp: Options: on time / late / deferred,<br/>ruled-out options with the reason
+  Disp->>API: Approve one option
+  Note over Disp: A human decides.<br/>Never re-routes automatically.
+  API->>API: Move chilled stops, plan v+1,<br/>events and notifications
+  API-->>Dock: Urgent release card
+  API-->>Dr: Plan changed: hand over the chilled stops
+  API-->>Dr2: Plan changed: new trip
+  API-->>St: New vehicle and arrival time,<br/>check temperature on receipt

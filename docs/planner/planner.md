@@ -1,6 +1,6 @@
 # Planning and allocation engine
 
-Code: [`packages/domain/src/rules.ts`](../packages/domain/src/rules.ts) (rules) and [`packages/planner/src`](../packages/planner/src) (allocation). Both are pure TypeScript with no I/O and are tested in isolation (`npm test`).
+Code: [`packages/domain/src/rules.ts`](../../packages/domain/src/rules.ts) (rules) and [`packages/planner/src`](../../packages/planner/src) (allocation). Both are pure TypeScript with no I/O and are tested in isolation (`npm test`).
 
 ## Rules enforced (booklet pp. 5 and 20–21)
 

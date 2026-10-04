@@ -4,55 +4,9 @@ Waypoint Nexus is a **modular monolith**: one deployable Fastify server that ser
 
 ## Components
 
-```mermaid
-flowchart TB
-  subgraph Browser["Browser: one React SPA, installable PWA"]
-    D["Dispatcher<br/>D1–D6, X2<br/>desktop"]
-    S["Store manager<br/>SM1–SM3, X5<br/>phone or desktop"]
-    L["Loader<br/>L1–L4, X3<br/>dock tablet"]
-    R["Driver<br/>Dr1–Dr4, X1, X4, DZ1<br/>personal phone"]
-    SW["Service worker<br/>(app shell precache)"]
-    IDB[("IndexedDB<br/>snapshots · outbox · photos")]
-    L --- IDB
-    R --- IDB
-    SW -.-> L
-    SW -.-> R
-  end
+![Component diagram](component-diagram.png)
 
-  subgraph Server["Fastify API (Node 22)"]
-    AUTH["auth<br/>JWT cookie, role guards"]
-    ORD["orders"]
-    PLAN["planning<br/>generate · move · swap · defer · publish"]
-    FIELD["field views<br/>loader queue · driver snapshot · store view"]
-    SYNC["sync<br/>idempotent mutation handler"]
-    INC["incidents<br/>recovery options"]
-    LIVE["live board · outlook"]
-    EV["event log + SSE fan-out"]
-    PHOTO["photo upload"]
-  end
-
-  subgraph Pkg["Shared packages (pure, no I/O)"]
-    PL["@wn/planner<br/>buildPlan · checkMove · suggestSwap · bottleneck"]
-    DOM["@wn/domain<br/>rule checker · trip time · mutation schemas"]
-  end
-
-  DB[("PostgreSQL 16")]
-  VOL[("uploads volume")]
-
-  D -- "REST" --> PLAN & ORD & LIVE & INC
-  S -- "REST" --> ORD & FIELD
-  L -- "GET snapshot / POST /sync/push" --> FIELD & SYNC
-  R -- "GET snapshot / POST /sync/push" --> FIELD & SYNC
-  R & L -- "multipart" --> PHOTO
-  EV -- "server-sent events" --> D & S & L & R
-  PLAN --> PL --> DOM
-  INC --> DOM
-  SYNC --> EV
-  PLAN --> EV
-  INC --> EV
-  PLAN & ORD & FIELD & SYNC & INC & LIVE & EV --> DB
-  PHOTO --> VOL
-```
+<sub>Diagram source: [`src/component-diagram.svg`](src/component-diagram.svg) (hand-drawn SVG).</sub>
 
 | Decision | Why |
 |---|---|
@@ -68,30 +22,9 @@ flowchart TB
 
 Principle: **field records are append-only facts; plans are server-authoritative and versioned.**
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant P as Driver phone (IndexedDB)
-  participant API as API /sync
-  participant DB as PostgreSQL
-  participant Disp as Dispatcher
+![Offline sync and reconciliation (DZ1)](offline-sync-sequence.png)
 
-  P->>API: GET /driver/today (at the depot, on wifi)
-  API-->>P: snapshot: trips, stops, access notes, plan v1
-  Note over P: Signal drops in the Kandy hills
-  P->>P: Complete stop: mutation {uuid, type, at, baseVersion: 1} saved to outbox, photo to photo queue
-  Disp->>API: Defer a stop on VEH041
-  API->>DB: write trips, bump plan to v2, event "plan.changed"
-  Note over P: Signal returns
-  P->>API: POST /sync/push [mutations]
-  API->>DB: apply each uuid once (sync_mutations), record the delivery
-  API-->>P: results: applied / duplicate / rejected (+ warning)
-  P->>API: POST /photos (separate queue)
-  P->>API: GET /driver/today
-  API-->>P: snapshot v2 + change events (who, when, why)
-  P->>P: v2 changes my stops, so show DZ1 diff and the driver accepts
-  P->>API: mutation plan.ack v2
-```
+<sub>Diagram source: [`src/offline-sync-sequence.mmd`](src/offline-sync-sequence.mmd) (Mermaid).</sub>
 
 - **Idempotency.** Every mutation carries a client-generated UUID. `sync_mutations` stores the result per UUID, so a retried batch after a dropped connection returns `duplicate` and is never applied twice. Each mutation runs in its own transaction, so one bad record never blocks the rest.
 - **Conflicts.** A proof of delivery is always accepted, because the goods physically arrived. If the plan had moved that stop to another vehicle, the server keeps the delivery **and** raises a `double_serve` exception on the dispatcher's live board. Nothing is silently dropped.
@@ -102,26 +35,9 @@ sequenceDiagram
 
 ## Publishing a plan and the cold-chain recovery
 
-```mermaid
-sequenceDiagram
-  autonumber
-  participant Dr as Driver (VEH041)
-  participant API
-  participant Disp as Dispatcher (X2)
-  participant Dock as Loader (X3)
-  participant Dr2 as Rescue driver (X4)
-  participant St as Store (X5)
+![Cold-chain incident and recovery (X1–X5)](cold-chain-recovery-sequence.png)
 
-  Dr->>API: incident.report reefer_fault (queued if offline)
-  API->>API: recoveryOptions(): each candidate reefer checked with the same rules<br/>(capacity, Fresh budget, trips per day) plus arrival simulation from the vehicle's position
-  Disp->>API: GET incident: options with on-time / late / deferred, ruled-out reasons
-  Disp->>API: approve option (human decision; never automatic)
-  API->>API: move chilled stops to the rescue vehicle, bump plan version, events + notifications
-  API-->>Dock: SSE: urgent release card
-  API-->>Dr: SSE: plan changed, hand over the chilled stops
-  API-->>Dr2: SSE: plan changed, new trip
-  API-->>St: notification: new vehicle, new arrival time, check temperature on receipt
-```
+<sub>Diagram source: [`src/cold-chain-recovery-sequence.mmd`](src/cold-chain-recovery-sequence.mmd) (Mermaid).</sub>
 
 ## Vehicle location from the driver's phone
 
@@ -142,10 +58,13 @@ Every state change writes one row to `events` (actor, type, plan version, scope,
 
 ## Deployment
 
-```mermaid
-flowchart LR
-  U["Phones and desktops"] -- HTTPS --> C["Caddy<br/>(auto TLS)"] --> A["app container<br/>Fastify + SPA"] --> P[("postgres container<br/>pgdata volume")]
-  A --> V[("uploads volume")]
-```
+![Deployment](deployment.png)
 
-`docker compose up` runs `db` and `app`. On first start the app runs the migrations and seeds the datasets and the demo day. `--profile prod` adds Caddy for HTTPS.
+<sub>Diagram source: [`src/deployment.mmd`](src/deployment.mmd) (Mermaid).</sub>
+
+`docker compose up` runs `db` and `app`. On first start the app runs the migrations and seeds the datasets and the demo day. Both containers listen only on the machine itself (`127.0.0.1`); the database is never exposed.
+
+- **Live demo:** the stack runs on a dedicated always-on machine, published at a stable `https://…ts.net` address by **Tailscale Funnel** (`tailscale funnel --bg 3000`). The certificate is real and no router ports are opened.
+- **Cloud VM alternative:** `docker compose --profile prod up -d --build` adds **Caddy**, which obtains an HTTPS certificate for `SITE_ADDRESS` automatically.
+
+HTTPS is required either way: the PWA's offline mode, camera and GPS only work on secure origins.

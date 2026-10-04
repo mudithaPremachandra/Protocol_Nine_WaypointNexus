@@ -1,0 +1,15 @@
+stateDiagram-v2
+  [*] --> placed: store manager (before cutoff)
+  placed --> queued: dispatcher closes orders (16:00)
+  [*] --> queued: placed after cutoff (next run)
+  queued --> planned: planner places it
+  queued --> deferred: no feasible trip (reason recorded)
+  planned --> deferred: dispatcher defers / swap / vehicle fault
+  deferred --> planned: dispatcher places it (validated)
+  planned --> loaded: loader releases the trip
+  loaded --> in_transit: driver starts the trip
+  in_transit --> delivered
+  in_transit --> partial
+  in_transit --> failed
+  delivered --> received: store confirms
+  partial --> received

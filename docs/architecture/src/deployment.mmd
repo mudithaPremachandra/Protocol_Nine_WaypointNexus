@@ -1,0 +1,31 @@
+flowchart LR
+  U["Phones and desktops<br/>(judges, drivers, stores)"]
+
+  subgraph Live["Live demo: always-on machine"]
+    direction LR
+    TF["Tailscale Funnel<br/>https://…ts.net<br/>real certificate,<br/>no ports opened"]
+  end
+
+  subgraph Cloud["Alternative: any cloud VM"]
+    direction LR
+    CA["Caddy<br/>automatic HTTPS<br/>(compose profile: prod)"]
+  end
+
+  subgraph Stack["docker compose up"]
+    direction LR
+    APP["<b>app</b> container<br/>Fastify API + web app<br/>migrates and seeds on start"]
+    PG[("<b>db</b> container<br/>PostgreSQL 16<br/>pgdata volume")]
+    UP[("uploads volume<br/>delivery photos")]
+    APP --> PG
+    APP --> UP
+  end
+
+  U -- "HTTPS" --> TF
+  U -. "HTTPS" .-> CA
+  TF -- "localhost:3000" --> APP
+  CA -. "app:3000" .-> APP
+
+  classDef box fill:#E0EEE8,stroke:#1F6F5C,color:#16302B;
+  classDef store fill:#FFFFFF,stroke:#4E625C,color:#16302B;
+  class U,TF,CA,APP box;
+  class PG,UP store;

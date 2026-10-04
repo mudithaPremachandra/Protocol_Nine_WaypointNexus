@@ -1,0 +1,31 @@
+sequenceDiagram
+  autonumber
+  participant P as Driver phone<br/>(IndexedDB)
+  participant API as API /sync
+  participant DB as PostgreSQL
+  participant Disp as Dispatcher
+
+  P->>API: GET /driver/today
+  API-->>P: Trip snapshot, plan v1
+  Note over P: At the depot, on wifi:<br/>the whole day is saved on the phone
+
+  rect rgb(251, 232, 214)
+  Note over P: Signal drops in the Kandy hills
+  P->>P: Complete stop
+  Note over P: Saved to the outbox with a<br/>device ID and plan version 1,<br/>photo saved to its own queue
+  Disp->>API: Defer a stop on VEH041
+  API->>DB: Update trips, plan becomes v2
+  Note over API,DB: Event "plan.changed" logged<br/>(who, when, why)
+  end
+
+  Note over P: Signal returns
+  P->>API: POST /sync/push (queued actions)
+  API->>DB: Apply each ID once
+  Note over API,DB: Replays come back as "duplicate":<br/>nothing is ever applied twice
+  API-->>P: applied / duplicate / rejected
+  P->>API: POST /photos (separate queue)
+  P->>API: GET /driver/today
+  API-->>P: Snapshot v2 + change events
+  P->>P: Stops differ from v1
+  Note over P: "Plan changed while offline" (DZ1):<br/>shows what changed, who and when,<br/>and the driver accepts
+  P->>API: plan.ack v2

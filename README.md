@@ -7,7 +7,7 @@ One order record moves from the store manager to the dispatcher, the dock, the d
 | | |
 |---|---|
 | Live demo | **https://muditha-1.taila8a61b.ts.net** (sign in with the accounts below) |
-| Demo video | *(YouTube link)* |
+| Demo video | **https://youtu.be/tQm9AicXIx8** |
 | Stack | TypeScript end to end: React + Vite installable PWA, Fastify API, PostgreSQL 16 (Drizzle), Docker Compose |
 
 ---

@@ -1,0 +1,20 @@
+{
+  "name": "waypoint-nexus",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": ["packages/*", "apps/*"],
+  "scripts": {
+    "build": "npm run build -w @wn/domain -w @wn/planner -w @wn/api -w @wn/web",
+    "test": "npm test -w @wn/domain -w @wn/planner",
+    "dev:api": "npm run dev -w @wn/api",
+    "dev:web": "npm run dev -w @wn/web",
+    "typecheck": "tsc -b"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": { "node": ">=20" }
+}

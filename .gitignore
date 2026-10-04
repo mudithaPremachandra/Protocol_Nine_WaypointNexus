@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+uploads/
+*.log
+coverage/
+playwright-report/
+test-results/
+.DS_Store
+apps/api/src/scratch/
+.playwright-mcp/
